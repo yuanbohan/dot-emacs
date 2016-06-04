@@ -14,6 +14,7 @@ If you're new to emacs, check out
  - helm swoop
  - company
  - eldoc
+ - clj-refactor
  - rainbow-delimiters
  - which key
  - ace jump
@@ -25,3 +26,4 @@ If you're new to emacs, check out
  - https://www.emacswiki.org/
  - http://cider.readthedocs.io/en/latest/
  - https://github.com/clojure-emacs
+ - https://github.com/clojure-emacs/clj-refactor.el/wiki

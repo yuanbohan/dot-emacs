@@ -1,0 +1,7 @@
+.cs_files
+*~*
+elpa/
+cider-history
+bookmarks
+recentf
+tutorial/
