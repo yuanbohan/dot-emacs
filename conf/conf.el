@@ -130,15 +130,6 @@
 (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Clojure related tips ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; M-x cider-scratch. this is to evaluate clojure exp with repl needless
-;;; C-c C-m. Macroexpansion 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;; cider-refresh C-c C-x ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq cider-refresh-show-log-buffer t)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; go right to the REPL buffer when it's finished connecting
 (setq cider-repl-pop-to-buffer-on-connect t)
@@ -162,6 +153,11 @@
 
 ;; evaluate code in Clojure files, display result overlay to be font-locked
 (setq cider-overlays-use-font-lock t)
+
+(setq cider-refresh-show-log-buffer t)
+
+;;;; M-x cider-scratch. this is to evaluate clojure exp with repl needless
+;;;; C-c C-m. Macroexpansion 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -196,17 +192,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-jump-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-x SPC") 'ace-jump-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; clojure refactor ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'clj-refactor)
-
-(defun my-clojure-mode-hook ()
-    (clj-refactor-mode 1)
-    (yas-minor-mode 1) ; for adding require/use/import statements
-    (cljr-add-keybindings-with-prefix "C-c C-r"))
-
-(add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
