@@ -186,9 +186,7 @@
 (sp-pair "(" ")"   :wrap "C-c (")
 (sp-pair "[" "]"   :wrap "C-c [")
 (sp-pair "{" "}"   :wrap "C-c {")
-(sp-pair "'" "'"   :wrap "C-c '")
 (sp-pair "\"" "\"" :wrap "C-c \"")
-(sp-pair "`" "`"   :wrap "C-c `")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-jump-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-x SPC") 'ace-jump-mode)
@@ -211,3 +209,28 @@
 (load-theme 'tomorrow-night-bright t)
 
 (set-default-font "Menlo 16")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(run-at-time nil (* 5 60) 'recentf-save-list)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; comment ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun comment-region-or-line ()
+    "Comments or uncomments the region or the current line if there's no active region."
+    (interactive)
+    (let (beg end)
+        (if (region-active-p)
+            (setq beg (region-beginning) end (region-end))
+            (setq beg (line-beginning-position) end (line-end-position)))
+        (comment-or-uncomment-region beg end)))
+
+(global-set-key (kbd "C-;") 'comment-region-or-line)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; revert buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c r") 'revert-buffer)
