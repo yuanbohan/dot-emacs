@@ -28,26 +28,33 @@
 ;; manually with M-x package-install
 ;; Add in your own as you wish:
 (defvar my-packages
-  '(;; makes handling lisp expressions much, much easier
-    ;; Cheatsheet: http://www.emacswiki.org/emacs/PareditCheatsheet
-    paredit
-
-    ;; key bindings and code colorization for Clojure
-    ;; https://github.com/clojure-emacs/clojure-mode
+  '(cider
     clojure-mode
-
-    ;; integration with a Clojure REPL
-    ;; https://github.com/clojure-emacs/cider
-    cider
-
-    ;; navigation
+    magit
+    paredit
+    smartparens
+    
     helm
-
-    ;; colorful parenthesis matching
+    helm-cider
+    helm-swoop
+    helm-projectile
+    projectile
+    neotree
+    
+    multiple-cursors
     rainbow-delimiters
+    which-key
+    company
+    yasnippet
+    ace-jump-mode
+    ace-window
+    whitespace-cleanup-mode
 
-    ;; git integration
-    magit))
+    ;; http://jblevins.org/projects/markdown-mode/
+    markdown-mode
+    
+    2048-game
+    ))
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a

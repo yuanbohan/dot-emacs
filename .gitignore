@@ -5,3 +5,9 @@ cider-history
 bookmarks
 recentf
 tutorial/
+games/
+projectile-bookmarks.eld
+projectile.cache
+tramp
+.mc-lists.el
+eshell/

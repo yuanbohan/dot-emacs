@@ -26,6 +26,12 @@
 
 (helm-mode 1)
 
+(require 'helm-projectile)
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+(setq projectile-switch-project-action 'helm-projectile)
+(global-set-key (kbd "C-c p s a") 'helm-projectile-ack)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Helm Swoop ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-swoop)
@@ -89,26 +95,59 @@
 (global-hl-line-mode 1)
 
 ;; Set any color as the background face of the current line:
-(set-face-background 'hl-line "#3e4446")
+;; (set-face-background 'hl-line "#0000CC")
 
 ;; To keep syntax highlighting in the current line:
-(set-face-foreground 'highlight nil)
+;; (set-face-foreground 'highlight nil)
+;; (set-face-foreground 'hl-line "#FF0000")
 
 ;; Highlights matching parenthesis
 (show-paren-mode 1)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;; revert ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-auto-revert-mode 1)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; paredit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (autoload 'enable-paredit-mode        "paredit" t)
+;;
+;;;; tutorial http://danmidwood.com/content/2014/11/21/animated-paredit.html
+;;
+;;;;  Wrapping an S-expression
+;; paredit-wrap-round is bound to M-(
+;; paredit-meta-doublequote is bound to M-"
+;;
+;;;; Slurping and Barfing
+;; paredit-forward-slurp-sexp,  bound to C-)
+;; paredit-forward-barf-sexp,   bound to C-}
+;; paredit-backward-slurp-sexp, bound to C-(
+;; paredit-backward-barf-sexp,  bound to C-{
+;;
+;;;; Splice
+;; paredit-splice-sexp bound to M-s
+;;
+;;;; Splitting and Joining
+;; Split is paredit-split-sexp and bound to M-S
+;; Join is paredit-join-sexps and bound to M-J
+;;
 (add-hook 'prog-mode-hook             #'enable-paredit-mode)
 (add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
 (add-hook 'cider-mode-hook            #'enable-paredit-mode)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook             #'rainbow-delimiters-mode)
 (add-hook 'cider-repl-mode-hook       #'rainbow-delimiters-mode)
 (add-hook 'cider-mode-hook            #'rainbow-delimiters-mode)
+(require 'cl-lib)
+(require 'color)
+(defun rainbow-delimiters-using-stronger-colors ()
+  (interactive)
+  (cl-loop
+   for index from 1 to rainbow-delimiters-max-face-count
+   do
+   (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+     (cl-callf color-saturate-name (face-foreground face) 30))))
+(add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; eldoc ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,12 +161,6 @@
 (add-hook 'prog-mode-hook             #'company-mode)
 (add-hook 'cider-repl-mode-hook       #'company-mode)
 (add-hook 'cider-mode-hook            #'company-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; minibufer to exec clojure form. `C-c C-:` ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'eval-expression-minibuffer-setup-hook #'company-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -172,6 +205,9 @@
 (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
 (global-set-key (kbd "C-M-f") 'sp-forward-sexp)
 (global-set-key (kbd "C-M-b") 'sp-backward-sexp)
+(global-set-key (kbd "C-M-n") 'sp-next-sexp)
+(global-set-key (kbd "C-M-p") 'sp-previous-sexp)
+
 (global-set-key (kbd "C-S-f") 'sp-forward-symbol)
 (global-set-key (kbd "C-S-b") 'sp-backward-symbol)
 
@@ -186,10 +222,13 @@
 (sp-pair "(" ")"   :wrap "C-c (")
 (sp-pair "[" "]"   :wrap "C-c [")
 (sp-pair "{" "}"   :wrap "C-c {")
-(sp-pair "\"" "\"" :wrap "C-c \"")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-jump-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-x SPC") 'ace-jump-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "M-p") 'ace-window)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -202,7 +241,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (menu-bar-mode -1)
-(global-linum-mode t)
+(global-linum-mode 0)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (add-to-list 'load-path "~/.emacs.d/themes")
@@ -232,5 +271,64 @@
 (global-set-key (kbd "C-;") 'comment-region-or-line)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; revert buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c r") 'revert-buffer)
+;;;;;;;;;;;;;;;;;;;;;;;;;;; multiple cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'multiple-cursors)
+(global-set-key (kbd "C-x C-v") 'mc/edit-lines)
+(global-set-key (kbd "C->")     'mc/mark-next-like-this)
+(global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
+(global-set-key (kbd "C-x C-a") 'mc/mark-all-like-this)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Org mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'org)
+(setq org-log-done 'time)
+
+;; The following lines are always needed.  Choose your own keys.
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+(global-set-key (kbd "C-c c") 'org-capture)
+
+(define-key org-mode-map (kbd "C-c t ,") 'org-table-move-column-left)
+(define-key org-mode-map (kbd "C-c t .") 'org-table-move-column-right)
+(define-key org-mode-map (kbd "C-c t <") 'org-table-move-row-up)
+(define-key org-mode-map (kbd "C-c t >") 'org-table-move-row-down)
+
+(define-key org-mode-map (kbd "C-c t I") 'org-table-insert-column)
+(define-key org-mode-map (kbd "C-c t K") 'org-table-delete-column)
+(define-key org-mode-map (kbd "C-c t i") 'org-table-insert-row)
+(define-key org-mode-map (kbd "C-c t k") 'org-table-kill-row)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Nerd Tree like ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'neotree)
+(global-set-key (kbd "C-c p n") 'neotree-toggle)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; expand-region ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; cljs figwheel ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'cider)
+(setq cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
+           (figwheel-sidecar.repl-api/start-figwheel!)
+           (figwheel-sidecar.repl-api/cljs-repl))")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; pandoc to compile/preview markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(custom-set-variables
+ '(markdown-command "/usr/local/bin/pandoc"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; yasnippet ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq mode-require-final-newline nil) ;; remove final newline
+(require 'yasnippet)
+(yas-reload-all)
+(add-hook 'prog-mode-hook    #'yas-minor-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
