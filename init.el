@@ -52,6 +52,7 @@
 
     ;; http://jblevins.org/projects/markdown-mode/
     markdown-mode
+    yaml-mode
     
     2048-game
     ))
