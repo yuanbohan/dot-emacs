@@ -6,6 +6,7 @@ If you're new to emacs, check out:
 - [emacs tutorial](http://clojure-doc.org/articles/tutorials/emacs.html)
 
 ## useful packages
+
  - magit (git)
  - helm (file, buffer quick switch)
  - helm swoop
@@ -35,7 +36,7 @@ If you're new to emacs, check out:
  - erlang-mode
  - edts
 
-# for Go
+## for Go
 
  - go-mode
  - go-autocomplete

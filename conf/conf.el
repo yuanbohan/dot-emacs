@@ -158,7 +158,7 @@
 ;; Join is paredit-join-sexps and bound to M-J
 ;;
 
-(add-hook 'prog-mode-hook       #'enable-paredit-mode)
+(add-hook 'clojure-mode-hook    #'enable-paredit-mode)
 (add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
 (add-hook 'cider-mode-hook      #'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook       'enable-paredit-mode)
@@ -232,6 +232,7 @@
 ;;;; https://ebzzry.github.io/emacs-pairs.html
 ;;;; https://github.com/Fuco1/smartparens
 (require 'smartparens-config)
+(add-hook 'prog-mode-hook        #'smartparens-mode)
 (add-hook 'clojure-mode-hook     #'smartparens-mode)
 (add-hook 'cider-repl-mode-hook  #'smartparens-mode)
 (add-hook 'cider-mode-hook       #'smartparens-mode)
@@ -373,7 +374,10 @@
 (require 'go-autocomplete)
 (require 'auto-complete-config)
 (require 'go-eldoc)
+(require 'go-guru)
 (ac-config-default)
+
+(setq gofmt-command "goimports")
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
@@ -382,6 +386,7 @@
 (defun my-go-mode-hook ()
   (add-hook 'before-save-hook 'gofmt-before-save) ; gofmt before every save
   (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
 
   (local-set-key (kbd "M-.") 'godef-jump)         ; Godef jump key binding
   (local-set-key (kbd "M-*") 'pop-tag-mark)
@@ -393,6 +398,7 @@
   )
 
 (add-hook 'go-mode-hook 'my-go-mode-hook)
+
 
 ;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;
 (setq rust-format-on-save t)

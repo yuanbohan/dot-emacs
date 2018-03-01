@@ -25,7 +25,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (auto-highlight-symbol expand-region go-autocomplete company-erlang erlang auto-complete edts helm-cider rainbow-delimiters go-errcheck nginx-mode dockerfile-mode groovy-mode yasnippet yaml-mode whitespace-cleanup-mode which-key use-package tagedit smex smartparens rust-mode pos-tip paredit neotree multiple-cursors magit inflections hydra highlight-current-line helm-swoop helm-go-package go-eldoc flycheck exec-path-from-shell evil edn company-go clojure-mode-extra-font-locking ace-jump-mode 2048-game))))
+    (go-guru memoize markdown-mode js2-mode diminish all-the-icons proceed pos-tip ace-window helm-projectile projectile go-playground auto-highlight-symbol expand-region go-autocomplete company-erlang erlang auto-complete edts helm-cider rainbow-delimiters go-errcheck nginx-mode dockerfile-mode groovy-mode yasnippet yaml-mode whitespace-cleanup-mode which-key use-package tagedit smex smartparens rust-mode paredit neotree multiple-cursors magit inflections hydra highlight-current-line helm-swoop helm-go-package go-eldoc flycheck exec-path-from-shell evil edn company-go clojure-mode-extra-font-locking ace-jump-mode 2048-game))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
