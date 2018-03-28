@@ -193,9 +193,10 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'prog-mode-hook             #'company-mode)
-(add-hook 'cider-repl-mode-hook       #'company-mode)
+(add-hook 'erlang-mode-hook           #'company-mode)
+(add-hook 'clojure-mode-hook          #'company-mode)
 (add-hook 'cider-mode-hook            #'company-mode)
+(add-hook 'cider-repl-mode-hook       #'company-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -269,7 +270,6 @@
    '("PATH")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(menu-bar-mode -1)
 (global-linum-mode 0)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
