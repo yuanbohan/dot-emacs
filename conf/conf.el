@@ -19,12 +19,14 @@
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
 
-;; hide the tool bar
-(tool-bar-mode -1)
+(tool-bar-mode -1) ; hide the tool bar
+(scroll-bar-mode -1) ; hide the scroll bar
 
 ;; show time
-;; (display-time-mode -1)
-;; (format-time-string "%m-%d %H:%M")
+(display-time-mode 1)
+(setq display-time-24hr-format 1)
+;; (setq display-time-string "%m-%d %H:%M")
+;; (setq format-time-string "%m-%d %H:%M")
 
 ;; use 2 spaces for tabs
 (defun die-tabs ()
@@ -193,10 +195,9 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'erlang-mode-hook           #'company-mode)
-(add-hook 'clojure-mode-hook          #'company-mode)
-(add-hook 'cider-mode-hook            #'company-mode)
+;; (add-hook 'prog-mode-hook             #'company-mode)
 (add-hook 'cider-repl-mode-hook       #'company-mode)
+(add-hook 'cider-mode-hook            #'company-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -270,6 +271,7 @@
    '("PATH")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(menu-bar-mode t)
 (global-linum-mode 0)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
@@ -444,3 +446,5 @@
   (ANY 2)
   (context 2))
 
+;;;;;;;;;; ESS - Emacs Speaks Statistics ;;;;;;;;;;
+(require 'ess-site)
