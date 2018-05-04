@@ -1,29 +1,31 @@
-## this is a clojure-friendly emacs config
+## this is personal emacs configuration
 
-If you're new to emacs, check out
-[basic emacs](http://www.braveclojure.com/basic-emacs/)
-[emacs tutorial](http://clojure-doc.org/articles/tutorials/emacs.html)
+- Thanks to [BearyChat](https://bearychat.com), I encounter [Clojure](https://clojure.org/) & [Erlang](https://www.erlang.org/)
+- Thanks to [xtang](https://github.com/xtang), I encounter [Emacs](https://www.gnu.org/software/emacs/)
+
+## major prod mode
+
+- Clojure
+- Erlang (EDTS)
+- Golang
+- R (ESS)
 
 ## useful packages
- - clojure mode
  - cider (compile, ut, debug)
  - magit (git)
  - paredit
  - smartparens (strengthen the paredit mode)
+ - projectile
  - helm (file, buffer quick switch)
  - helm swoop
  - company
  - eldoc
- - clj-refactor
  - rainbow-delimiters
  - which key
  - ace jump
+ - ace window
  - tomorrow theme
-
-## useful website
-
- - https://www.gnu.org/software/emacs/
- - https://www.emacswiki.org/
- - http://cider.readthedocs.io/en/latest/
- - https://github.com/clojure-emacs
- - https://github.com/clojure-emacs/clj-refactor.el/wiki
+ - multiple cursor
+ - expand region
+ - neotree
+ 
