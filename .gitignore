@@ -11,3 +11,8 @@ projectile.cache
 tramp
 .mc-lists.el
 eshell/
+abbrev_defs
+ac-comphist.dat
+backup/
+edts/
+url/

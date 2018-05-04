@@ -1,3 +1,33 @@
+;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)      ;; if you use :diminish
+(require 'bind-key)      ;; if you use any :bind variant
+(require 'all-the-icons) ;; all the fonts
+
+
+(setq exec-path-from-shell-check-startup-files nil) ;; remove warning
+
+;; http://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
+(setq ad-redefinition-action 'accept)
+
+;; hide the welcome screen
+(setq inhibit-startup-screen t)
+
+;; replace tab with space
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+
+(tool-bar-mode -1) ; hide the tool bar
+(scroll-bar-mode -1) ; hide the scroll bar
+
+;; show time
+(display-time-mode 1)
+(setq display-time-24hr-format 1)
+;; (setq display-time-string "%m-%d %H:%M")
+;; (setq format-time-string "%m-%d %H:%M")
+
 ;; use 2 spaces for tabs
 (defun die-tabs ()
   (interactive)
@@ -129,9 +159,15 @@
 ;; Split is paredit-split-sexp and bound to M-S
 ;; Join is paredit-join-sexps and bound to M-J
 ;;
-(add-hook 'prog-mode-hook             #'enable-paredit-mode)
-(add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
-(add-hook 'cider-mode-hook            #'enable-paredit-mode)
+
+(add-hook 'clojure-mode-hook    #'enable-paredit-mode)
+(add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
+(add-hook 'cider-mode-hook      #'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook       'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           'enable-paredit-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
@@ -155,10 +191,11 @@
 (add-hook 'cider-repl-mode-hook       #'eldoc-mode)
 (add-hook 'cider-mode-hook            #'eldoc-mode)
 (setq cider-eldoc-display-for-symbol-at-point nil)
+(setq cider-repl-display-help-banner nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'prog-mode-hook             #'company-mode)
+;; (add-hook 'prog-mode-hook             #'company-mode)
 (add-hook 'cider-repl-mode-hook       #'company-mode)
 (add-hook 'cider-mode-hook            #'company-mode)
 
@@ -190,13 +227,14 @@
 (setq cider-refresh-show-log-buffer t)
 
 ;;;; M-x cider-scratch. this is to evaluate clojure exp with repl needless
-;;;; C-c C-m. Macroexpansion 
+;;;; C-c C-m. Macroexpansion
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; https://ebzzry.github.io/emacs-pairs.html
 ;;;; https://github.com/Fuco1/smartparens
 (require 'smartparens-config)
+(add-hook 'prog-mode-hook        #'smartparens-mode)
 (add-hook 'clojure-mode-hook     #'smartparens-mode)
 (add-hook 'cider-repl-mode-hook  #'smartparens-mode)
 (add-hook 'cider-mode-hook       #'smartparens-mode)
@@ -216,13 +254,6 @@
 (global-set-key (kbd "C-k") 'sp-kill-hybrid-sexp)
 (global-set-key (kbd "M-k") 'sp-backward-kill-sexp)
 
-(global-set-key (kbd "M-[") 'sp-backward-unwrap-sexp)
-(global-set-key (kbd "M-]") 'sp-unwrap-sexp)
-
-(sp-pair "(" ")"   :wrap "C-c (")
-(sp-pair "[" "]"   :wrap "C-c [")
-(sp-pair "{" "}"   :wrap "C-c {")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-jump-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-x SPC") 'ace-jump-mode)
@@ -240,7 +271,7 @@
    '("PATH")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(menu-bar-mode -1)
+(menu-bar-mode t)
 (global-linum-mode 0)
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
@@ -280,29 +311,32 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Org mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org)
-(setq org-log-done 'time)
+;; (require 'org)
+;; (setq org-log-done 'time)
 
-;; The following lines are always needed.  Choose your own keys.
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c b") 'org-iswitchb)
-(global-set-key (kbd "C-c c") 'org-capture)
+;; ;; The following lines are always needed.  Choose your own keys.
+;; (global-set-key (kbd "C-c l") 'org-store-link)
+;; (global-set-key (kbd "C-c a") 'org-agenda)
+;; (global-set-key (kbd "C-c b") 'org-iswitchb)
+;; (global-set-key (kbd "C-c c") 'org-capture)
 
-(define-key org-mode-map (kbd "C-c t ,") 'org-table-move-column-left)
-(define-key org-mode-map (kbd "C-c t .") 'org-table-move-column-right)
-(define-key org-mode-map (kbd "C-c t <") 'org-table-move-row-up)
-(define-key org-mode-map (kbd "C-c t >") 'org-table-move-row-down)
+;; (define-key org-mode-map (kbd "C-c t ,") 'org-table-move-column-left)
+;; (define-key org-mode-map (kbd "C-c t .") 'org-table-move-column-right)
+;; (define-key org-mode-map (kbd "C-c t <") 'org-table-move-row-up)
+;; (define-key org-mode-map (kbd "C-c t >") 'org-table-move-row-down)
 
-(define-key org-mode-map (kbd "C-c t I") 'org-table-insert-column)
-(define-key org-mode-map (kbd "C-c t K") 'org-table-delete-column)
-(define-key org-mode-map (kbd "C-c t i") 'org-table-insert-row)
-(define-key org-mode-map (kbd "C-c t k") 'org-table-kill-row)
+;; (define-key org-mode-map (kbd "C-c t I") 'org-table-insert-column)
+;; (define-key org-mode-map (kbd "C-c t K") 'org-table-delete-column)
+;; (define-key org-mode-map (kbd "C-c t i") 'org-table-insert-row)
+;; (define-key org-mode-map (kbd "C-c t k") 'org-table-kill-row)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Nerd Tree like ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'neotree)
 (global-set-key (kbd "C-c p n") 'neotree-toggle)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq neo-smart-open t)
+(setq projectile-switch-project-action 'neotree-projectile-action)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; expand-region ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -318,9 +352,14 @@
            (figwheel-sidecar.repl-api/cljs-repl))")
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; pandoc to compile/preview markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(custom-set-variables
- '(markdown-command "/usr/local/bin/pandoc"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;; markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; yasnippet ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -332,3 +371,81 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; go mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'go-autocomplete)
+(require 'auto-complete-config)
+(require 'go-eldoc)
+(require 'go-guru)
+(ac-config-default)
+
+(setq gofmt-command "goimports")
+
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "GOPATH"))
+
+(defun my-go-mode-hook ()
+  (add-hook 'before-save-hook 'gofmt-before-save) ; gofmt before every save
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+
+  (local-set-key (kbd "M-.") 'godef-jump)         ; Godef jump key binding
+  (local-set-key (kbd "M-*") 'pop-tag-mark)
+  (local-set-key (kbd "C-c C-r") 'go-run)
+  (local-set-key (kbd "C-c C-k") 'compile)        ; Invoke compiler
+  (local-set-key (kbd "C-c C-l") 'recompile)      ; Redo most recent compile cmd
+  (local-set-key (kbd "M-]") 'next-error)         ; Go to next error (or msg)
+  (local-set-key (kbd "M-[") 'previous-error)     ; Go to previous error or msg
+  )
+
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
+
+;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;
+(setq rust-format-on-save t)
+
+
+;;;;;;;;;;;;;;;;;;;; Erlang Development Tool Suite ;;;;;;;;;;;;;;;;;;;;
+(defun my-after-init-hook ()
+  (require 'edts-start))
+(add-hook 'after-init-hook 'my-after-init-hook)
+
+(eval-after-load 'erlang
+  '(progn
+     (define-key erlang-mode-map "{" 'paredit-open-curly)
+     (define-key erlang-mode-map "}" 'paredit-close-curly)
+     (define-key erlang-mode-map (kbd "RET") 'reindent-then-newline-and-indent)))
+
+(defun my-paredit-space-for-delimiter-predicate (endp delimiter)
+  (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
+           (not endp))
+      (not (or (and (memq delimiter '(?\[ ?\{ ?\()))))
+    t))
+
+(add-hook 'paredit-space-for-delimiter-predicates
+          #'my-paredit-space-for-delimiter-predicate)
+
+
+;;;;;;;;;;;;;;;;;;;; js2 mode ;;;;;;;;;;;;;;;;;;;;
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist (cons (rx ".js" eos) 'js2-mode))
+
+
+;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
+(require 'clojure-mode)
+
+(define-clojure-indent
+  (defroutes 'defun)
+  (GET 2)
+  (POST 2)
+  (PUT 2)
+  (PATCH 2)
+  (DELETE 2)
+  (HEAD 2)
+  (ANY 2)
+  (context 2))
+
+
+;;;;;;;;;; ESS - Emacs Speaks Statistics ;;;;;;;;;;
+(require 'ess-site)
