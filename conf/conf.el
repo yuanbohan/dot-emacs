@@ -160,14 +160,16 @@
 ;; Join is paredit-join-sexps and bound to M-J
 ;;
 
-(add-hook 'clojure-mode-hook    #'enable-paredit-mode)
-(add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
-(add-hook 'cider-mode-hook      #'enable-paredit-mode)
-(add-hook 'emacs-lisp-mode-hook       'enable-paredit-mode)
-(add-hook 'lisp-mode-hook             'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-(add-hook 'scheme-mode-hook           'enable-paredit-mode)
-
+(add-hook 'prog-mode-hook             #'enable-paredit-mode)
+(add-hook 'clojure-mode-hook          #'enable-paredit-mode)
+(add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
+(add-hook 'cider-mode-hook            #'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+(add-hook 'R-mode-hook                #'enable-paredit-mode)
+(add-hook 'ess-mode-hook              #'enable-paredit-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
@@ -238,6 +240,8 @@
 (add-hook 'clojure-mode-hook     #'smartparens-mode)
 (add-hook 'cider-repl-mode-hook  #'smartparens-mode)
 (add-hook 'cider-mode-hook       #'smartparens-mode)
+(add-hook 'R-mode-hook           #'smartparens-mode)
+(add-hook 'ess-mode-hook         #'smartparens-mode)
 
 (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
 (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
@@ -448,3 +452,5 @@
 
 ;;;;;;;;;; ESS - Emacs Speaks Statistics ;;;;;;;;;;
 (require 'ess-site)
+
+(setq ess-history-directory "~/.R/")
