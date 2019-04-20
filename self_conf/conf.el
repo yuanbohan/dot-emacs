@@ -41,6 +41,7 @@
 ;; https://github.com/ShingoFukuyama/helm-swoop
 (require 'helm-config)
 (require 'helm)
+(helm-mode 1)
 
 (global-set-key (kbd "M-x")     'helm-M-x)
 (global-set-key (kbd "C-x b")   'helm-mini)
@@ -54,14 +55,19 @@
 
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
 
-(helm-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;; projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;; helm projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-projectile)
+(helm-projectile-on)
+
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
-(helm-projectile-on)
 (setq projectile-switch-project-action 'helm-projectile)
-(global-set-key (kbd "C-c p s a") 'helm-projectile-ack)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Helm Swoop ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-swoop)
@@ -255,8 +261,8 @@
 
 (global-set-key (kbd "C-M-k") 'sp-kill-sexp)
 (global-set-key (kbd "C-M-w") 'sp-copy-sexp)
-(global-set-key (kbd "C-k") 'sp-kill-hybrid-sexp)
-(global-set-key (kbd "M-k") 'sp-backward-kill-sexp)
+(global-set-key (kbd "C-k")   'sp-kill-hybrid-sexp)
+(global-set-key (kbd "M-k")   'sp-backward-kill-sexp)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-jump-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -407,28 +413,18 @@
 
 
 ;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+(add-hook 'racer-mode-hook #'company-mode)
+
+(require 'rust-mode)
+(define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
+(define-key rust-mode-map (kbd "C-c C-k") #'cargo-process-build)
+(define-key rust-mode-map (kbd "C-c C-r") #'cargo-process-run)
+
 (setq rust-format-on-save t)
-
-
-;;;;;;;;;;;;;;;;;;;; Erlang Development Tool Suite ;;;;;;;;;;;;;;;;;;;;
-(defun my-after-init-hook ()
-  (require 'edts-start))
-(add-hook 'after-init-hook 'my-after-init-hook)
-
-(eval-after-load 'erlang
-  '(progn
-     (define-key erlang-mode-map "{" 'paredit-open-curly)
-     (define-key erlang-mode-map "}" 'paredit-close-curly)
-     (define-key erlang-mode-map (kbd "RET") 'reindent-then-newline-and-indent)))
-
-(defun my-paredit-space-for-delimiter-predicate (endp delimiter)
-  (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
-           (not endp))
-      (not (or (and (memq delimiter '(?\[ ?\{ ?\()))))
-    t))
-
-(add-hook 'paredit-space-for-delimiter-predicates
-          #'my-paredit-space-for-delimiter-predicate)
+(setq company-tooltip-align-annotations t)
 
 
 ;;;;;;;;;;;;;;;;;;;; js2 mode ;;;;;;;;;;;;;;;;;;;;
