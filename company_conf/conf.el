@@ -4,7 +4,7 @@
 (setq indent-line-function 'insert-tab)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
-(set-default-font "Menlo 16")
+;; (set-default-font "Menlo 16")
 (setq inhibit-startup-screen t) ; hide the welcome screen
 (menu-bar-mode t)
 (global-linum-mode 0)
@@ -12,12 +12,16 @@
 (scroll-bar-mode -1)
 (global-hl-line-mode 1)
 (show-paren-mode 1) ; Highlights matching parenthesis
+(global-set-key (kbd "s-l") 'goto-line)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; theme related ;;;;;;;;;;;;;;
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dracula t)
-;; (load-theme 'tomorrow-night-bright t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; buffer managerment ;;;;;;;;;;;;;;
+(global-set-key (kbd "s-k") 'kill-this-buffer)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;
 (require 'recentf)
@@ -27,7 +31,7 @@
 (run-at-time nil (* 5 60) 'recentf-save-list)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;; projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -48,6 +52,7 @@
       helm-recentf-fuzzy-match    t
       helm-M-x-fuzzy-match        t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-projectile)
 (projectile-global-mode)
@@ -55,6 +60,7 @@
 (helm-projectile-on)
 (setq projectile-switch-project-action 'helm-projectile)
 (global-set-key (kbd "C-c p s a") 'helm-projectile-ack)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm swoop ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-swoop)
@@ -114,12 +120,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; magit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-x g") 'magit-status)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "M-p") 'ace-window)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'which-key)
 (which-key-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
@@ -134,17 +143,10 @@
 (setq projectile-switch-project-action 'neotree-projectile-action)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; expand-region ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;
-(require 'whitespace-cleanup-mode)
-(global-whitespace-cleanup-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; paredit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'prog-mode-hook #'enable-paredit-mode)
 (add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'smartparens-config)
@@ -170,9 +172,11 @@
 (global-set-key (kbd "C-k") 'sp-kill-hybrid-sexp)
 (global-set-key (kbd "M-k") 'sp-backward-kill-sexp)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; comment ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun comment-region-or-line ()
@@ -185,6 +189,7 @@
         (comment-or-uncomment-region beg end)))
 
 (global-set-key (kbd "C-;") 'comment-region-or-line)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; exec-path-from-shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (memq window-system '(mac ns))
@@ -227,9 +232,15 @@
 (setq cider-eldoc-display-for-symbol-at-point nil)
 (setq cider-repl-display-help-banner nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; company for cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'cider-repl-mode-hook #'company-mode)
-(add-hook 'cider-mode-hook      #'company-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'after-init-hook 'global-company-mode)
+
+(setq company-idle-delay 0.5)
+(setq company-minimum-prefix-length 3)
+(setq company-selection-wrap-around t)
+(setq company-tooltip-align-annotations t)
+(company-tng-configure-default)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -237,9 +248,7 @@
 
 (add-hook 'rust-mode-hook  #'racer-mode)
 (add-hook 'rust-mode-hook  #'cargo-minor-mode)
-
-(add-hook 'racer-mode-hook #'eldoc-mode)
-(add-hook 'racer-mode-hook #'company-mode)
+(add-hook 'rust-mode-hook  #'racer-mode)
 
 
 (define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
@@ -247,23 +256,19 @@
 (define-key rust-mode-map (kbd "C-c C-r") #'cargo-process-run)
 
 (setq rust-format-on-save t)
-(setq company-tooltip-align-annotations t)
+;; (setq company-tooltip-align-annotations t)
 
 (setq racer-rust-src-path
       (concat (string-trim
                (shell-command-to-string "rustc --print sysroot"))
               "/lib/rustlib/src/rust/src"))
 
-;;;;;;;;;;;;;;;;;;;; Erlang Development Tool Suite ;;;;;;;;;;;;;;;;;;;;
-(defun my-after-init-hook ()
-  (require 'edts-start))
-(add-hook 'after-init-hook 'my-after-init-hook)
-
-(eval-after-load 'erlang
-  '(progn
-     (define-key erlang-mode-map "{" 'paredit-open-curly)
-     (define-key erlang-mode-map "}" 'paredit-close-curly)
-     (define-key erlang-mode-map (kbd "RET") 'reindent-then-newline-and-indent)))
+;;;;;;;;;;;;;;;;;;;; Erlang ;;;;;;;;;;;;;;;;;;;;;;;;
+(setq load-path (cons  "/usr/lib/erlang/lib/tools-3.1/emacs" load-path))
+(setq erlang-root-dir "/usr/lib/erlang")
+(setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
+(require 'erlang-start)
+(setq erlang-electric-commands '())
 
 (defun my-paredit-space-for-delimiter-predicate (endp delimiter)
   (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
@@ -274,8 +279,8 @@
 (add-hook 'paredit-space-for-delimiter-predicates
           #'my-paredit-space-for-delimiter-predicate)
 
-;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
 (define-clojure-indent
   (defroutes 'defun)
   (GET 2)
