@@ -203,9 +203,11 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (add-hook 'prog-mode-hook             #'company-mode)
-(add-hook 'cider-repl-mode-hook       #'company-mode)
-(add-hook 'cider-mode-hook            #'company-mode)
+(add-hook 'after-init-hook 'global-company-mode)
+
+(setq company-idle-delay 2)
+(setq company-minimum-prefix-length 2)
+(setq company-selection-wrap-around t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -415,8 +417,6 @@
 ;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'rust-mode-hook #'racer-mode)
-(add-hook 'racer-mode-hook #'eldoc-mode)
-(add-hook 'racer-mode-hook #'company-mode)
 
 (require 'rust-mode)
 (define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
@@ -424,7 +424,6 @@
 (define-key rust-mode-map (kbd "C-c C-r") #'cargo-process-run)
 
 (setq rust-format-on-save t)
-(setq company-tooltip-align-annotations t)
 
 
 ;;;;;;;;;;;;;;;;;;;; js2 mode ;;;;;;;;;;;;;;;;;;;;
