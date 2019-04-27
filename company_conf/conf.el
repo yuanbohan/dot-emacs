@@ -12,7 +12,22 @@
 (scroll-bar-mode -1)
 (global-hl-line-mode 1)
 (show-paren-mode 1) ; Highlights matching parenthesis
+
+;;;;;;;;;;;;;;;;;;;;;; jump to line ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "s-l") 'goto-line)
+
+
+;;;;;;;;;;;;;;;;;;;;;; duplicate line ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
+
+(global-set-key (kbd "C-c C-d") 'duplicate-line)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; theme related ;;;;;;;;;;;;;;
@@ -21,6 +36,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; buffer managerment ;;;;;;;;;;;;;;
 (global-set-key (kbd "s-k") 'kill-this-buffer)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; yasnippet ;;;;;;;;;;;;;;
+(require 'yasnippet)
+(yas-reload-all)
+
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+(setq yas-wrap-around-region t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;
@@ -144,18 +167,26 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; paredit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'prog-mode-hook #'enable-paredit-mode)
-(add-hook 'cider-repl-mode-hook #'enable-paredit-mode)
+;; (add-hook 'prog-mode-hook #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
+(add-hook 'cider-mode-hook            #'smartparens-mode)
+(add-hook 'clojure-mode-hook          #'smartparens-mode)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'smartparens-config)
 (add-hook 'prog-mode-hook        #'smartparens-mode)
-(add-hook 'clojure-mode-hook     #'smartparens-mode)
-(add-hook 'cider-repl-mode-hook  #'smartparens-mode)
-(add-hook 'cider-mode-hook       #'smartparens-mode)
-(add-hook 'R-mode-hook           #'smartparens-mode)
-(add-hook 'ess-mode-hook         #'smartparens-mode)
+;; (add-hook 'clojure-mode-hook     #'smartparens-mode)
+;; (add-hook 'cider-repl-mode-hook  #'smartparens-mode)
+;; (add-hook 'cider-mode-hook       #'smartparens-mode)
+;; (add-hook 'R-mode-hook           #'smartparens-mode)
+;; (add-hook 'ess-mode-hook         #'smartparens-mode)
 
 (global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
 (global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
@@ -248,8 +279,6 @@
 
 (add-hook 'rust-mode-hook  #'racer-mode)
 (add-hook 'rust-mode-hook  #'cargo-minor-mode)
-(add-hook 'rust-mode-hook  #'racer-mode)
-
 
 (define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
 (define-key rust-mode-map (kbd "C-c C-k") #'cargo-process-build)
