@@ -1,45 +1,74 @@
-;; https://github.com/jwiegley/use-package
+;;;;;;;;;;;;;;;;; use-package ;;;;;;;;;;;;;;;;
 (eval-when-compile
   (require 'use-package))
-(require 'diminish)      ;; if you use :diminish
-(require 'bind-key)      ;; if you use any :bind variant
-(require 'all-the-icons) ;; all the fonts
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
 
-
-(setq exec-path-from-shell-check-startup-files nil) ;; remove warning
-
-;; http://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
-(setq ad-redefinition-action 'accept)
-
-;; hide the welcome screen
-(setq inhibit-startup-screen t)
-
-;; replace tab with space
+;;;;;;;;;;;;;;;;; replace tab with space ;;;;;;;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
 
-(tool-bar-mode -1) ; hide the tool bar
-(scroll-bar-mode -1) ; hide the scroll bar
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
+(set-default-font "Menlo 16")
+(setq inhibit-startup-screen t) ; hide the welcome screen
+(menu-bar-mode t)
+(global-linum-mode 0)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(global-hl-line-mode 1)
+(show-paren-mode 1) ; Highlights matching parenthesis
 
-;; show time
-(display-time-mode 1)
-(setq display-time-24hr-format 1)
-;; (setq display-time-string "%m-%d %H:%M")
-;; (setq format-time-string "%m-%d %H:%M")
+;;;;;;;;;;;;;;;;;;;;;; jump to line ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "s-l") 'goto-line)
 
-;; use 2 spaces for tabs
-(defun die-tabs ()
+
+;;;;;;;;;;;;;;;;;;;;;; duplicate line ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun duplicate-line()
   (interactive)
-  (set-variable 'tab-width 2)
-  (mark-whole-buffer)
-  (untabify (region-beginning) (region-end))
-  (keyboard-quit))
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
+
+(global-set-key (kbd "C-c C-d") 'duplicate-line)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; theme related ;;;;;;;;;;;;;;
+(load-theme 'dracula t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; buffer managerment ;;;;;;;;;;;;;;
+(global-set-key (kbd "s-k") 'kill-this-buffer)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; yasnippet ;;;;;;;;;;;;;;
+(require 'yasnippet)
+(yas-reload-all)
+
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+(setq yas-wrap-around-region t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(run-at-time nil (* 5 60) 'recentf-save-list)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;; projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; https://emacs-helm.github.io/helm
-;; https://github.com/ShingoFukuyama/helm-swoop
-(require 'helm-config)
 (require 'helm)
 (helm-mode 1)
 
@@ -48,28 +77,23 @@
 (global-set-key (kbd "C-x r b") 'helm-bookmarks)
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
 
 (setq helm-buffers-fuzzy-matching t
       helm-recentf-fuzzy-match    t
       helm-M-x-fuzzy-match        t)
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-projectile)
-(helm-projectile-on)
-
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
+(helm-projectile-on)
 (setq projectile-switch-project-action 'helm-projectile)
+(global-set-key (kbd "C-c p s a") 'helm-projectile-ack)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Helm Swoop ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; helm swoop ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'helm-swoop)
 
 ;; Change the keybinds to whatever you like :)
@@ -114,7 +138,22 @@
 (setq helm-swoop-use-line-number-face t)
 
 ;; If you prefer fuzzy matching
-(setq helm-swoop-use-fuzzy-match t)
+(setq helm-swoop-use-fuzzy-match nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; multiple cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'multiple-cursors)
+(global-set-key (kbd "C-x C-v") 'mc/edit-lines)
+(global-set-key (kbd "C->")     'mc/mark-next-like-this)
+(global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
+(global-set-key (kbd "C-x C-a") 'mc/mark-all-like-this)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; magit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-x g") 'magit-status)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "M-p") 'ace-window)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,95 +161,86 @@
 (which-key-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; magit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-x g") 'magit-status)
+;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; highlight ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Highlight current line
-(global-hl-line-mode 1)
-
-;; Set any color as the background face of the current line:
-;; (set-face-background 'hl-line "#0000CC")
-
-;; To keep syntax highlighting in the current line:
-;; (set-face-foreground 'highlight nil)
-;; (set-face-foreground 'hl-line "#FF0000")
-
-;; Highlights matching parenthesis
-(show-paren-mode 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; revert ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-auto-revert-mode 1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;; neo tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'all-the-icons)
+(require 'neotree)
+(global-set-key (kbd "C-c p n") 'neotree-toggle)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq neo-smart-open t)
+(setq projectile-switch-project-action 'neotree-projectile-action)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; paredit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;;; tutorial http://danmidwood.com/content/2014/11/21/animated-paredit.html
-;;
-;;;;  Wrapping an S-expression
-;; paredit-wrap-round is bound to M-(
-;; paredit-meta-doublequote is bound to M-"
-;;
-;;;; Slurping and Barfing
-;; paredit-forward-slurp-sexp,  bound to C-)
-;; paredit-forward-barf-sexp,   bound to C-}
-;; paredit-backward-slurp-sexp, bound to C-(
-;; paredit-backward-barf-sexp,  bound to C-{
-;;
-;;;; Splice
-;; paredit-splice-sexp bound to M-s
-;;
-;;;; Splitting and Joining
-;; Split is paredit-split-sexp and bound to M-S
-;; Join is paredit-join-sexps and bound to M-J
-;;
-
-(add-hook 'prog-mode-hook             #'enable-paredit-mode)
-(add-hook 'clojure-mode-hook          #'enable-paredit-mode)
+;; (add-hook 'prog-mode-hook #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
 (add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
-(add-hook 'cider-mode-hook            #'enable-paredit-mode)
+(add-hook 'cider-mode-hook            #'smartparens-mode)
+(add-hook 'clojure-mode-hook          #'smartparens-mode)
 (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-(add-hook 'R-mode-hook                #'enable-paredit-mode)
-(add-hook 'ess-mode-hook              #'enable-paredit-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'smartparens-config)
+(add-hook 'prog-mode-hook        #'smartparens-mode)
+;; (add-hook 'clojure-mode-hook     #'smartparens-mode)
+;; (add-hook 'cider-repl-mode-hook  #'smartparens-mode)
+;; (add-hook 'cider-mode-hook       #'smartparens-mode)
+;; (add-hook 'R-mode-hook           #'smartparens-mode)
+;; (add-hook 'ess-mode-hook         #'smartparens-mode)
+
+(global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
+(global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
+(global-set-key (kbd "C-M-f") 'sp-forward-sexp)
+(global-set-key (kbd "C-M-b") 'sp-backward-sexp)
+(global-set-key (kbd "C-M-n") 'sp-next-sexp)
+(global-set-key (kbd "C-M-p") 'sp-previous-sexp)
+
+(global-set-key (kbd "C-S-f") 'sp-forward-symbol)
+(global-set-key (kbd "C-S-b") 'sp-backward-symbol)
+
+(global-set-key (kbd "C-M-k") 'sp-kill-sexp)
+(global-set-key (kbd "C-M-w") 'sp-copy-sexp)
+(global-set-key (kbd "C-k") 'sp-kill-hybrid-sexp)
+(global-set-key (kbd "M-k") 'sp-backward-kill-sexp)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook             #'rainbow-delimiters-mode)
-(add-hook 'cider-repl-mode-hook       #'rainbow-delimiters-mode)
-(add-hook 'cider-mode-hook            #'rainbow-delimiters-mode)
-(require 'cl-lib)
-(require 'color)
-(defun rainbow-delimiters-using-stronger-colors ()
-  (interactive)
-  (cl-loop
-   for index from 1 to rainbow-delimiters-max-face-count
-   do
-   (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
-     (cl-callf color-saturate-name (face-foreground face) 30))))
-(add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; eldoc ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'prog-mode-hook             #'eldoc-mode)
-(add-hook 'cider-repl-mode-hook       #'eldoc-mode)
-(add-hook 'cider-mode-hook            #'eldoc-mode)
-(setq cider-eldoc-display-for-symbol-at-point nil)
-(setq cider-repl-display-help-banner nil)
+;;;;;;;;;;;;;;;;;;;;;;;;;;; comment ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun comment-region-or-line ()
+    "Comments or uncomments the region or the current line if there's no active region."
+    (interactive)
+    (let (beg end)
+        (if (region-active-p)
+            (setq beg (region-beginning) end (region-end))
+            (setq beg (line-beginning-position) end (line-end-position)))
+        (comment-or-uncomment-region beg end)))
+
+(global-set-key (kbd "C-;") 'comment-region-or-line)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'after-init-hook 'global-company-mode)
-
-(setq company-idle-delay 2)
-(setq company-minimum-prefix-length 2)
-(setq company-selection-wrap-around t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;; exec-path-from-shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-envs
+   '("PATH")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'cider)
+(add-hook 'cider-repl-mode-hook #'eldoc-mode)
+
 ;; go right to the REPL buffer when it's finished connecting
 (setq cider-repl-pop-to-buffer-on-connect t)
 
@@ -236,216 +266,74 @@
 
 (setq cider-refresh-show-log-buffer t)
 
-;;;; M-x cider-scratch. this is to evaluate clojure exp with repl needless
-;;;; C-c C-m. Macroexpansion
+(setq cider-repl-tab-command #'indent-for-tab-command)
+
+(setq cider-eldoc-display-for-symbol-at-point nil)
+(setq cider-repl-display-help-banner nil)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; https://ebzzry.github.io/emacs-pairs.html
-;;;; https://github.com/Fuco1/smartparens
-(require 'smartparens-config)
-(add-hook 'prog-mode-hook        #'smartparens-mode)
-(add-hook 'clojure-mode-hook     #'smartparens-mode)
-(add-hook 'cider-repl-mode-hook  #'smartparens-mode)
-(add-hook 'cider-mode-hook       #'smartparens-mode)
-(add-hook 'R-mode-hook           #'smartparens-mode)
-(add-hook 'ess-mode-hook         #'smartparens-mode)
+;;;;;;;;;;;;;;;;;;;;;;;;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'after-init-hook 'global-company-mode)
 
-(global-set-key (kbd "C-M-a") 'sp-beginning-of-sexp)
-(global-set-key (kbd "C-M-e") 'sp-end-of-sexp)
-(global-set-key (kbd "C-M-f") 'sp-forward-sexp)
-(global-set-key (kbd "C-M-b") 'sp-backward-sexp)
-(global-set-key (kbd "C-M-n") 'sp-next-sexp)
-(global-set-key (kbd "C-M-p") 'sp-previous-sexp)
-
-(global-set-key (kbd "C-S-f") 'sp-forward-symbol)
-(global-set-key (kbd "C-S-b") 'sp-backward-symbol)
-
-(global-set-key (kbd "C-M-k") 'sp-kill-sexp)
-(global-set-key (kbd "C-M-w") 'sp-copy-sexp)
-(global-set-key (kbd "C-k")   'sp-kill-hybrid-sexp)
-(global-set-key (kbd "M-k")   'sp-backward-kill-sexp)
+(setq company-idle-delay 0.5)
+(setq company-minimum-prefix-length 3)
+(setq company-selection-wrap-around t)
+(setq company-tooltip-align-annotations t)
+(company-tng-configure-default)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-jump-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-x SPC") 'ace-jump-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "M-p") 'ace-window)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Sets up exec-path-from shell
-;; https://github.com/purcell/exec-path-from-shell
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs
-   '("PATH")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(menu-bar-mode t)
-(global-linum-mode 0)
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(add-to-list 'load-path "~/.emacs.d/themes")
-(load-theme 'tomorrow-night-bright t)
-
-(set-default-font "Menlo 16")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(run-at-time nil (* 5 60) 'recentf-save-list)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; comment ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun comment-region-or-line ()
-    "Comments or uncomments the region or the current line if there's no active region."
-    (interactive)
-    (let (beg end)
-        (if (region-active-p)
-            (setq beg (region-beginning) end (region-end))
-            (setq beg (line-beginning-position) end (line-end-position)))
-        (comment-or-uncomment-region beg end)))
-
-(global-set-key (kbd "C-;") 'comment-region-or-line)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; multiple cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'multiple-cursors)
-(global-set-key (kbd "C-x C-v") 'mc/edit-lines)
-(global-set-key (kbd "C->")     'mc/mark-next-like-this)
-(global-set-key (kbd "C-<")     'mc/mark-previous-like-this)
-(global-set-key (kbd "C-x C-a") 'mc/mark-all-like-this)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Org mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'org)
-;; (setq org-log-done 'time)
-
-;; ;; The following lines are always needed.  Choose your own keys.
-;; (global-set-key (kbd "C-c l") 'org-store-link)
-;; (global-set-key (kbd "C-c a") 'org-agenda)
-;; (global-set-key (kbd "C-c b") 'org-iswitchb)
-;; (global-set-key (kbd "C-c c") 'org-capture)
-
-;; (define-key org-mode-map (kbd "C-c t ,") 'org-table-move-column-left)
-;; (define-key org-mode-map (kbd "C-c t .") 'org-table-move-column-right)
-;; (define-key org-mode-map (kbd "C-c t <") 'org-table-move-row-up)
-;; (define-key org-mode-map (kbd "C-c t >") 'org-table-move-row-down)
-
-;; (define-key org-mode-map (kbd "C-c t I") 'org-table-insert-column)
-;; (define-key org-mode-map (kbd "C-c t K") 'org-table-delete-column)
-;; (define-key org-mode-map (kbd "C-c t i") 'org-table-insert-row)
-;; (define-key org-mode-map (kbd "C-c t k") 'org-table-kill-row)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Nerd Tree like ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'neotree)
-(global-set-key (kbd "C-c p n") 'neotree-toggle)
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-(setq neo-smart-open t)
-(setq projectile-switch-project-action 'neotree-projectile-action)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; expand-region ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; cljs figwheel ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'cider)
-(setq cider-cljs-lein-repl
-      "(do (require 'figwheel-sidecar.repl-api)
-           (figwheel-sidecar.repl-api/start-figwheel!)
-           (figwheel-sidecar.repl-api/cljs-repl))")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package markdown-mode
-  :ensure t
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; yasnippet ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq mode-require-final-newline nil) ;; remove final newline
-(require 'yasnippet)
-(yas-reload-all)
-(add-hook 'prog-mode-hook    #'yas-minor-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; go mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'go-autocomplete)
-(require 'auto-complete-config)
-(require 'go-eldoc)
-(require 'go-guru)
-(ac-config-default)
-
-(setq gofmt-command "goimports")
-
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-env "GOPATH"))
-
-(defun my-go-mode-hook ()
-  (add-hook 'before-save-hook 'gofmt-before-save) ; gofmt before every save
-  (add-hook 'go-mode-hook 'go-eldoc-setup)
-  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-
-  (local-set-key (kbd "M-.") 'godef-jump)         ; Godef jump key binding
-  (local-set-key (kbd "M-*") 'pop-tag-mark)
-  (local-set-key (kbd "C-c C-r") 'go-run)
-  (local-set-key (kbd "C-c C-k") 'compile)        ; Invoke compiler
-  (local-set-key (kbd "C-c C-l") 'recompile)      ; Redo most recent compile cmd
-  (local-set-key (kbd "M-]") 'next-error)         ; Go to next error (or msg)
-  (local-set-key (kbd "M-[") 'previous-error)     ; Go to previous error or msg
-  )
-
-(add-hook 'go-mode-hook 'my-go-mode-hook)
-
-
-;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;
-(add-hook 'rust-mode-hook 'cargo-minor-mode)
-(add-hook 'rust-mode-hook #'racer-mode)
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'rust-mode)
+
+(add-hook 'rust-mode-hook  #'racer-mode)
+(add-hook 'rust-mode-hook  #'cargo-minor-mode)
+
 (define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
 (define-key rust-mode-map (kbd "C-c C-k") #'cargo-process-build)
 (define-key rust-mode-map (kbd "C-c C-r") #'cargo-process-run)
 
 (setq rust-format-on-save t)
+;; (setq company-tooltip-align-annotations t)
+
+(setq racer-rust-src-path
+      (concat (string-trim
+               (shell-command-to-string "rustc --print sysroot"))
+              "/lib/rustlib/src/rust/src"))
 
 
-;;;;;;;;;;;;;;;;;;;; js2 mode ;;;;;;;;;;;;;;;;;;;;
-(require 'js2-mode)
-(add-to-list 'auto-mode-alist (cons (rx ".js" eos) 'js2-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-:") 'avy-goto-char)
+(global-set-key (kbd "C-'") 'avy-goto-char-2)
 
 
-;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
-(require 'clojure-mode)
+;;;;;;;;;;;;;;;;;;;; Erlang ;;;;;;;;;;;;;;;;;;;;;;;;
+;;(setq load-path (cons  "/usr/lib/erlang/lib/tools-3.1/emacs" load-path))
+;;(setq erlang-root-dir "/usr/lib/erlang")
+;;(setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
+;;(require 'erlang-start)
+;;(setq erlang-electric-commands '())
+;;
+;;(defun my-paredit-space-for-delimiter-predicate (endp delimiter)
+;;  (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
+;;           (not endp))
+;;      (not (or (and (memq delimiter '(?\[ ?\{ ?\()))))
+;;    t))
+;;
+;;(add-hook 'paredit-space-for-delimiter-predicates
+;;          #'my-paredit-space-for-delimiter-predicate)
 
+
+;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
 (define-clojure-indent
   (defroutes 'defun)
   (GET 2)
   (POST 2)
   (PUT 2)
-  (PATCH 2)
   (DELETE 2)
   (HEAD 2)
   (ANY 2)
+  (OPTIONS 2)
+  (PATCH 2)
+  (rfn 2)
+  (let-routes 1)
   (context 2))
-
-;;;;;;;;;; ESS - Emacs Speaks Statistics ;;;;;;;;;;
-(require 'ess-site)
-
-(setq ess-history-directory "~/.R/")
