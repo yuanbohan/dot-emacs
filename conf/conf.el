@@ -12,7 +12,7 @@
 (setq indent-line-function 'insert-tab)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
-(set-default-font "Menlo 16")
+;; (set-default-font "Menlo 16")
 (setq inhibit-startup-screen t) ; hide the welcome screen
 (menu-bar-mode -1)
 (global-linum-mode -1)
@@ -154,21 +154,30 @@
 (global-set-key (kbd "C-x C-a") 'mc/mark-all-like-this)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; magit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-x g") 'magit-status)
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "M-p") 'ace-window)
+(use-package ace-window
+  :ensure t
+  :bind (("M-p" . 'ace-window)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'which-key)
-(which-key-mode)
+(use-package which-key
+  :ensure t
+
+  :config
+  (which-key-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
-(add-hook 'after-save-hook #'whitespace-cleanup)
+(use-package whitespace-cleanup-mode
+  :ensure t
+  :bind (("C-c C-SPC". 'whitespace-cleanup))
+  :hook 'after-save)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; neo tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -290,22 +299,24 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'rust-mode)
+(use-package rust-mode
+  :ensure t
 
-(add-hook 'rust-mode-hook  #'racer-mode)
-(add-hook 'rust-mode-hook  #'cargo-minor-mode)
+  :init
+  (use-package racer
+    :ensure t
+    :hook ('rust-mode . 'racer-mode))
+  (use-package cargo
+    :ensure t
+    :hook ('rust-mode . 'cargo-minor-mode))
 
-(define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
-(define-key rust-mode-map (kbd "C-c C-b") #'cargo-process-build)
-(define-key rust-mode-map (kbd "C-c C-r") #'cargo-process-run)
+  :config
+  (setq rust-format-on-save t)
 
-(setq rust-format-on-save t)
-;; (setq company-tooltip-align-annotations t)
+  :bind (("TAB". 'company-indent-or-complete-common)
+         ("C-c C-b". 'cargo-process-build)
+         ("C-c C-r". 'cargo-process-run)))
 
-(setq racer-rust-src-path
-      (concat (string-trim
-               (shell-command-to-string "rustc --print sysroot"))
-              "/lib/rustlib/src/rust/src"))
 
 ;;;;;;;;;;;;;;;;;;;; Erlang ;;;;;;;;;;;;;;;;;;;;;;;;
 (setq load-path (cons  "/usr/lib/erlang/lib/tools-3.1/emacs" load-path))
@@ -324,39 +335,31 @@
           #'my-paredit-space-for-delimiter-predicate)
 
 
-;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
-(define-clojure-indent
-  (defroutes 'defun)
-  (GET 2)
-  (POST 2)
-  (PUT 2)
-  (DELETE 2)
-  (HEAD 2)
-  (ANY 2)
-  (OPTIONS 2)
-  (PATCH 2)
-  (rfn 2)
-  (let-routes 1)
-  (context 2))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-:") 'avy-goto-char)
-(global-set-key (kbd "C-'") 'avy-goto-char-2)
+(use-package avy
+  :ensure t
+  :bind (("C-:". 'avy-goto-char)
+         ("C-'". 'avy-goto-char-2)))
 
 
 ;;;;;;;;;;;;;;;;;;;; chinese input on ubuntu ;;;;;;;;;;;;;;;;;;;;
-;; ;; https://github.com/tumashu/pyim#org8bc2528
-;; (require 'pyim)
-;; (require 'pyim-basedict) ; 拼音词库设置，五笔用户 *不需要* 此行设置
-;; (pyim-basedict-enable)   ; 拼音词库，五笔用户 *不需要* 此行设置
-;; (setq default-input-method "pyim")
-;; (global-set-key (kbd "C-\\") 'toggle-input-method)
-;; ;; (global-set-key (kbd "s-SPC") 'toggle-input-method)
+;; https://github.com/tumashu/pyim
+(use-package pyim
+  :ensure t
+  :if (string-equal system-type "gnu/linux")
+  :config
+  (use-package pyim-basedict
+    :ensure t
+    :config (pyim-basedict-enable))
+  (setq default-input-method "pyim")
+  ;; (setq pyim-default-scheme 'quanpin) ;; 全拼
+  :bind (("C-\\". 'toggle-input-method)))
 
 
 ;;;;;;;;;;;;;;;;;;;; rest client ;;;;;;;;;;;;;;;;;;;;
-(require 'restclient)
-(add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
+(use-package restclient
+  :ensure t
+  :mode "\\.http\\'")
 
 
 ;;;;;;;;;;;;;;;;;;;; haskell ;;;;;;;;;;;;;;;;;;;;
@@ -388,3 +391,18 @@
             (set (make-local-variable 'company-backends)
                  (append '((company-capf company-dabbrev-code))
                          company-backends))))
+
+;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
+(define-clojure-indent
+  (defroutes 'defun)
+  (GET 2)
+  (POST 2)
+  (PUT 2)
+  (DELETE 2)
+  (HEAD 2)
+  (ANY 2)
+  (OPTIONS 2)
+  (PATCH 2)
+  (rfn 2)
+  (let-routes 1)
+  (context 2))

@@ -7,7 +7,8 @@
 
 - [x] Rust
 - [x] Clojure
-- [ ] Erlang (EDTS)
+- [ ] Haskell
+- [ ] Erlang
 - [ ] Golang
 - [ ] R (ESS)
 
@@ -28,5 +29,5 @@
  - multiple cursor
  - expand region
  - neotree
- - `dracula` theme
+ - dracula theme
  - yasnippet
