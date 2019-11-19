@@ -14,12 +14,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
 (set-default-font "Menlo 16")
 (setq inhibit-startup-screen t) ; hide the welcome screen
-(menu-bar-mode t)
-(global-linum-mode 0)
+(menu-bar-mode -1)
+(global-linum-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (global-hl-line-mode 1)
 (show-paren-mode 1) ; Highlights matching parenthesis
+
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<down>") 'shrink-window)
+(global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
 ;;;;;;;;;;;;;;;;;;;;;; jump to line ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "s-l") 'goto-line)
@@ -163,6 +168,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c C-SPC") 'whitespace-cleanup)
+(add-hook 'after-save-hook #'whitespace-cleanup)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; neo tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -178,13 +184,14 @@
 ;; (add-hook 'prog-mode-hook #'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
 (add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
-(add-hook 'cider-mode-hook            #'smartparens-mode)
-(add-hook 'clojure-mode-hook          #'smartparens-mode)
+(add-hook 'cider-mode-hook            #'enable-paredit-mode)
+(add-hook 'clojure-mode-hook          #'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
 (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+(add-hook 'toml-mode-hook             #'enable-paredit-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -289,7 +296,7 @@
 (add-hook 'rust-mode-hook  #'cargo-minor-mode)
 
 (define-key rust-mode-map (kbd "TAB")     #'company-indent-or-complete-common)
-(define-key rust-mode-map (kbd "C-c C-k") #'cargo-process-build)
+(define-key rust-mode-map (kbd "C-c C-b") #'cargo-process-build)
 (define-key rust-mode-map (kbd "C-c C-r") #'cargo-process-run)
 
 (setq rust-format-on-save t)
@@ -300,27 +307,21 @@
                (shell-command-to-string "rustc --print sysroot"))
               "/lib/rustlib/src/rust/src"))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-:") 'avy-goto-char)
-(global-set-key (kbd "C-'") 'avy-goto-char-2)
-
-
 ;;;;;;;;;;;;;;;;;;;; Erlang ;;;;;;;;;;;;;;;;;;;;;;;;
-;;(setq load-path (cons  "/usr/lib/erlang/lib/tools-3.1/emacs" load-path))
-;;(setq erlang-root-dir "/usr/lib/erlang")
-;;(setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
-;;(require 'erlang-start)
-;;(setq erlang-electric-commands '())
-;;
-;;(defun my-paredit-space-for-delimiter-predicate (endp delimiter)
-;;  (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
-;;           (not endp))
-;;      (not (or (and (memq delimiter '(?\[ ?\{ ?\()))))
-;;    t))
-;;
-;;(add-hook 'paredit-space-for-delimiter-predicates
-;;          #'my-paredit-space-for-delimiter-predicate)
+(setq load-path (cons  "/usr/lib/erlang/lib/tools-3.1/emacs" load-path))
+(setq erlang-root-dir "/usr/lib/erlang")
+(setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
+(require 'erlang-start)
+(setq erlang-electric-commands '())
+
+(defun my-paredit-space-for-delimiter-predicate (endp delimiter)
+  (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
+           (not endp))
+      (not (or (and (memq delimiter '(?\[ ?\{ ?\()))))
+    t))
+
+(add-hook 'paredit-space-for-delimiter-predicates
+          #'my-paredit-space-for-delimiter-predicate)
 
 
 ;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
@@ -337,3 +338,53 @@
   (rfn 2)
   (let-routes 1)
   (context 2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-:") 'avy-goto-char)
+(global-set-key (kbd "C-'") 'avy-goto-char-2)
+
+
+;;;;;;;;;;;;;;;;;;;; chinese input on ubuntu ;;;;;;;;;;;;;;;;;;;;
+;; ;; https://github.com/tumashu/pyim#org8bc2528
+;; (require 'pyim)
+;; (require 'pyim-basedict) ; 拼音词库设置，五笔用户 *不需要* 此行设置
+;; (pyim-basedict-enable)   ; 拼音词库，五笔用户 *不需要* 此行设置
+;; (setq default-input-method "pyim")
+;; (global-set-key (kbd "C-\\") 'toggle-input-method)
+;; ;; (global-set-key (kbd "s-SPC") 'toggle-input-method)
+
+
+;;;;;;;;;;;;;;;;;;;; rest client ;;;;;;;;;;;;;;;;;;;;
+(require 'restclient)
+(add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
+
+
+;;;;;;;;;;;;;;;;;;;; haskell ;;;;;;;;;;;;;;;;;;;;
+(require 'haskell-mode)
+(require 'haskell-interactive-mode)
+(require 'haskell-process)
+
+(define-key haskell-mode-map (kbd "<f8>")    'haskell-navigate-imports)
+(define-key haskell-mode-map (kbd "C-`")     'haskell-interactive-bring)
+(define-key haskell-mode-map (kbd "M-.")     'haskell-mode-jump-to-def-or-tag)
+(define-key haskell-mode-map (kbd "C-c C-,") 'haskell-mode-format-imports)
+(define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+(define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+(define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+(define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+(define-key haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)
+;; (define-key haskell-mode-map (kbd "M-.") 'haskell-mode-jump-to-def)
+;; (define-key haskell-mode-map (kbd "M-.") 'haskell-mode-tag-find)
+
+(setq haskell-stylish-on-save t
+      haskell-tags-on-save t)
+
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
+;; http://haskell.github.io/haskell-mode/manual/latest/Completion-support.html#Completion-support
+(add-hook 'haskell-mode-hook
+          (lambda ()
+            (set (make-local-variable 'company-backends)
+                 (append '((company-capf company-dabbrev-code))
+                         company-backends))))
