@@ -1,5 +1,7 @@
 ## this is personal emacs configuration
 
+move `init.el` to `~/.emacs/init.el` and `conf/conf.el` to `~/.emacs/conf/conf.el`
+
 - Thanks to [BearyChat](https://bearychat.com), I encounter Clojure, Erlang, Rust
 - Thanks to [xtang](https://github.com/xtang), I encounter Emacs
 
