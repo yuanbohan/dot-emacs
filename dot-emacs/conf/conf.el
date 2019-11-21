@@ -26,12 +26,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
 ;; (set-default-font "Menlo 16")
-(setq inhibit-startup-screen t) ; hide the welcome screen
-(menu-bar-mode -1)
-(global-linum-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(global-hl-line-mode 1)
+;; (setq inhibit-startup-screen t) ; hide the welcome screen
+(menu-bar-mode -1) ; hide menu bar
+(global-linum-mode -1) ; hide line number
+(tool-bar-mode -1) ; hide tool bar
+(scroll-bar-mode -1) ; hide scroll bar
+(global-hl-line-mode 1) ; highlight current line
 (show-paren-mode 1) ; Highlights matching parenthesis
 
 
@@ -67,6 +67,15 @@
 
 (global-set-key (kbd "C-;") 'comment-region-or-line)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ensure mode installed ;;;;;;;;;;;;;;
+(use-package yaml-mode
+  :ensure t)
+
+(use-package toml-mode
+  :ensure t)
+
+(use-package markdown-mode
+  :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; theme related ;;;;;;;;;;;;;;
 (use-package dracula-theme
@@ -212,8 +221,9 @@
 (use-package neotree
   :ensure t
   :init
-  ;;;; https://github.com/domtronn/all-the-icons.el
-  ;;;; beautify your neotree, uncomment the following 4 lines, restart emacs and comment them again
+  ;; NOTE:
+  ;;;; uncomment the following 4 lines, restart emacs and comment them again
+  ;;;; link: https://github.com/domtronn/all-the-icons.el
   ;; (use-package all-the-icons
   ;;   :ensure t
   ;;   :config
@@ -267,7 +277,25 @@
   :ensure t
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; clojure and cider ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package clojure-mode
+  :ensure t)
+
+;; compojure indentation
+(define-clojure-indent
+  (defroutes 'defun)
+  (GET 2)
+  (POST 2)
+  (PUT 2)
+  (DELETE 2)
+  (HEAD 2)
+  (ANY 2)
+  (OPTIONS 2)
+  (PATCH 2)
+  (rfn 2)
+  (let-routes 1)
+  (context 2))
+
 (use-package cider
   :ensure t
   ;; :hook ('cider-repl-mode . 'eldoc-mode)
@@ -340,23 +368,6 @@
          ("C-c C-r". 'cargo-process-run)))
 
 
-;;;;;;;;;;;;;;;;;;;; Erlang ;;;;;;;;;;;;;;;;;;;;;;;;
-;; (setq load-path (cons  "/usr/lib/erlang/lib/tools-3.1/emacs" load-path))
-;; (setq erlang-root-dir "/usr/lib/erlang")
-;; (setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
-;; (require 'erlang-start)
-;; (setq erlang-electric-commands '())
-
-;; (defun my-paredit-space-for-delimiter-predicate (endp delimiter)
-;;   (if (and (member major-mode '(erlang-mode php-mode rust-mode c-mode))
-;;            (not endp))
-;;       (not (or (and (memq delimiter '(?\[ ?\{ ?\()))))
-;;     t))
-
-;; (add-hook 'paredit-space-for-delimiter-predicates
-          ;; #'my-paredit-space-for-delimiter-predicate)
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package avy
   :ensure t
@@ -382,49 +393,3 @@
 (use-package restclient
   :ensure t
   :mode "\\.http\\'")
-
-
-;;;;;;;;;;;;;;;;;;;; haskell ;;;;;;;;;;;;;;;;;;;;
-;; (require 'haskell-mode)
-;; (require 'haskell-interactive-mode)
-;; (require 'haskell-process)
-
-;; (define-key haskell-mode-map (kbd "<f8>")    'haskell-navigate-imports)
-;; (define-key haskell-mode-map (kbd "C-`")     'haskell-interactive-bring)
-;; (define-key haskell-mode-map (kbd "M-.")     'haskell-mode-jump-to-def-or-tag)
-;; (define-key haskell-mode-map (kbd "C-c C-,") 'haskell-mode-format-imports)
-;; (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-;; (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
-;; (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-;; (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-;; (define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-;; (define-key haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)
-;; (define-key haskell-mode-map (kbd "M-.") 'haskell-mode-jump-to-def)
-;; (define-key haskell-mode-map (kbd "M-.") 'haskell-mode-tag-find)
-
-;; (setq haskell-stylish-on-save t
-;;       haskell-tags-on-save t)
-
-;; (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-
-;; ;; http://haskell.github.io/haskell-mode/manual/latest/Completion-support.html#Completion-support
-;; (add-hook 'haskell-mode-hook
-;;           (lambda ()
-;;             (set (make-local-variable 'company-backends)
-;;                  (append '((company-capf company-dabbrev-code))
-;;                          company-backends))))
-
-;;;;;;;;;;;;;;;;;;;; compojure indentation ;;;;;;;;;;;;;;;;;;;;
-(define-clojure-indent
-  (defroutes 'defun)
-  (GET 2)
-  (POST 2)
-  (PUT 2)
-  (DELETE 2)
-  (HEAD 2)
-  (ANY 2)
-  (OPTIONS 2)
-  (PATCH 2)
-  (rfn 2)
-  (let-routes 1)
-  (context 2))
