@@ -1,23 +1,26 @@
-;;;;;;;;;;;;;;;;; use-package ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; Link References ;;;;;;;;;;;;;;;;;;;;;;;;
+;; - [use package](https://github.com/jwiegley/use-package)
+;; - good config samples
+;;   - https://github.com/bbatsov/emacs.d/blob/master/init.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;; use-package ;;;;;;;;;;;;;;;;
 (eval-when-compile
   (require 'use-package))
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
-
 (use-package diminish
-  :ensure t)
-(require 'diminish)  ;; if you use :diminish
+  :ensure t
+  :config
+  (require 'diminish)  ;; if you use :diminish
+  )
 
 (use-package bind-key
-  :ensure t)
-(require 'bind-key) ;; if you use any :bind variant
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; exec-path-from-shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs
-   '("PATH")))
+  :ensure t
+  :config
+  (require 'bind-key) ;; if you use any :bind variant
+  )
 
 ;;;;;;;;;;;;;;;;; replace tab with space ;;;;;;;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
@@ -42,7 +45,6 @@
 (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "S-C-<down>") 'shrink-window)
 (global-set-key (kbd "S-C-<up>") 'enlarge-window)
-
 
 ;;;;;;;;;;;;;;;;;;;;;; duplicate line ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun duplicate-line()
@@ -83,6 +85,14 @@
   :config
   (load-theme 'dracula t))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;; exec-path-from-shell ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-envs
+     '("PATH"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; yasnippet ;;;;;;;;;;;;;;
 (use-package yasnippet
@@ -91,7 +101,6 @@
   (yas-reload-all)
   (setq yas-wrap-around-region t)
   :hook ('prog-mode . 'yas-minor-mode))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;
 (use-package recentf
@@ -102,7 +111,6 @@
         recentf-max-menu-items 15)
   (run-at-time nil (* 5 60) 'recentf-save-list))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;; projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package projectile
   :ensure t
@@ -110,7 +118,6 @@
   (projectile-mode +1)
   :bind-keymap
   ("C-c p"   . projectile-command-map))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package helm
@@ -127,7 +134,6 @@
    ("M-y" .     'helm-show-kill-ring)
    ("C-x C-f" . 'helm-find-files)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm projectile ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package helm-projectile
   :ensure t
@@ -136,7 +142,6 @@
   (helm-projectile-on)
   (setq projectile-completion-system 'helm)
   (setq projectile-switch-project-action 'helm-projectile))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; helm swoop ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package helm-swoop
@@ -180,7 +185,6 @@
    ("C-r" . 'helm-previous-line)
    ("C-s" . 'helm-next-line)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; multiple cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package multiple-cursors
   :ensure t
@@ -190,18 +194,15 @@
    ("C-<" . 'mc/mark-previous-like-this)
    ("C-x C-a" . 'mc/mark-all-like-this)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; magit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ace-window
   :ensure t
   :bind (("M-p" . 'ace-window)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package which-key
@@ -209,15 +210,14 @@
   :config
   (which-key-mode))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;; whitespace cleanup ;;;;;;;;;;;;;;;;;;;;;;
 (use-package whitespace-cleanup-mode
   :ensure t
   :bind (("C-c C-SPC". 'whitespace-cleanup))
   :hook 'after-save)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; neo tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://github.com/jaypei/emacs-neotree
 (use-package neotree
   :ensure t
   :init
@@ -234,7 +234,18 @@
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (setq neo-smart-open t)
   (setq projectile-switch-project-action 'neotree-projectile-action))
-
+;; `n` next line, p previous line.
+;; `SPC` or RET or TAB Open current item if it is a file. Fold/Unfold current item if it is a directory.
+;; `U` Go up a directory
+;; `g` Refresh
+;; `A` Maximize/Minimize the NeoTree Window
+;; `H` Toggle display hidden files
+;; `O` Recursively open a directory
+;; `C-c C-n` Create a file or create a directory if filename ends with a ‘/’
+;; `C-c C-d` Delete a file or a directory.
+;; `C-c C-r` Rename a file or a directory.
+;; `C-c C-c` Change the root directory.
+;; `C-c C-p` Copy a file or a directory.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; paredit ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (add-hook 'prog-mode-hook #'enable-paredit-mode)
@@ -250,7 +261,6 @@
   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
   (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
   (add-hook 'toml-mode-hook             #'enable-paredit-mode))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package package
@@ -270,7 +280,6 @@
    ("C-k"   . 'sp-kill-hybrid-sexp)
    ("M-k"   . 'sp-backward-kill-sexp)))
 (require 'smartparens-config)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package rainbow-delimiters
@@ -342,7 +351,6 @@
   (setq company-selection-wrap-around t)
   (setq company-tooltip-align-annotations t))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Rust ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; DO ensure `rust` and `racer` installed in your operating system !!!!!!!!!
 (use-package rust-mode
@@ -367,15 +375,17 @@
          ("C-c C-b". 'cargo-process-build)
          ("C-c C-r". 'cargo-process-run)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package avy
   :ensure t
-  :bind (("C-:". 'avy-goto-char)
-         ("C-'". 'avy-goto-char-2)))
+  :bind (("s-;". 'avy-goto-char-2)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package expand-region
+  :ensure t
+  :bind (("C-=". 'er/expand-region)))
 
-;;;;;;;;;;;;;;;;;;;; chinese input on ubuntu ;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; chinese input on gnu/linux ;;;;;;;;;;;;;;;;;;;;
 ;; https://github.com/tumashu/pyim
 (use-package pyim
   :ensure t
@@ -387,7 +397,6 @@
   (setq default-input-method "pyim")
   ;; (setq pyim-default-scheme 'quanpin) ;; 全拼
   :bind (("C-\\". 'toggle-input-method)))
-
 
 ;;;;;;;;;;;;;;;;;;;; rest client ;;;;;;;;;;;;;;;;;;;;
 (use-package restclient
