@@ -397,3 +397,20 @@
 (use-package restclient
   :ensure t
   :mode "\\.http\\'")
+
+;;;;;;;;;;;;;;;;;;;; org ;;;;;;;;;;;;;;;;;;;;
+(use-package org
+  :ensure t
+  :init
+  (use-package org-bullets
+    :ensure t
+    :hook ('org-mode . (lambda () (org-bullets-mode 1))))
+  :bind
+  (("C-c l". 'org-store-link)
+   ("C-c a" . 'org-agenda)
+   ("C-c b" . 'org-switchb))
+  :config
+  (setq org-log-done 'time)
+  (setq org-hide-emphasis-markers t)
+  (setq org-todo-keywords
+        '((sequence "TODO" "DOING"  "|" "DONE" "CANCEL"))))
