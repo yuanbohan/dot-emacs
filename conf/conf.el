@@ -28,15 +28,23 @@
 (setq indent-line-function 'insert-tab)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
-;; (set-default-font "Menlo 16")
+;; https://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
+(set-face-attribute 'default nil :height 160)
 (setq inhibit-startup-screen t) ; hide the welcome screen
 (menu-bar-mode -1) ; hide menu bar
 (global-linum-mode -1) ; hide line number
 (tool-bar-mode -1) ; hide tool bar
 (scroll-bar-mode -1) ; hide scroll bar
 (global-hl-line-mode 1) ; highlight current line
-(show-paren-mode 1) ; Highlights matching parenthesis
 
+;;;;;;;;;;;;;;;;;;;; Highlights matching parenthesis ;;;;;;;;;;;;;;;;;;;;;;;
+(use-package paren
+  :ensure t
+  :config
+  (show-paren-mode 1)
+  (set-face-background 'show-paren-match (face-background 'default))
+  (set-face-foreground 'show-paren-match "red")
+  (set-face-attribute  'show-paren-match nil :strike-through t :weight 'ultra-bold))
 
 ;;;;;;;;;;;;;;;;;;;;;; global set key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "s-l") 'goto-line)
