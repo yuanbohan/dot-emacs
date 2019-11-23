@@ -36,8 +36,8 @@ move `init.el` to `~/.emacs/init.el` and `conf/conf.el` to `~/.emacs/conf/conf.e
  - yasnippet
 
 
-## Thanks
+## Thanks to
 
-- Thanks to [xtang](https://github.com/xtang), I encounter Emacs
-- Thanks to [BearyChat](https://bearychat.com), I encounter Clojure, Erlang
-- Thanks to [sunng87](https://github.com/sunng87), I am doing something interesting with Rust
+- [xtang](https://github.com/xtang), I encounter Emacs
+- [BearyChat](https://bearychat.com), I encounter Clojure, Erlang
+- [sunng87](https://github.com/sunng87), I am doing something interesting with Rust

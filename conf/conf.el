@@ -29,7 +29,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
 ;; (set-default-font "Menlo 16")
-;; (setq inhibit-startup-screen t) ; hide the welcome screen
+(setq inhibit-startup-screen t) ; hide the welcome screen
 (menu-bar-mode -1) ; hide menu bar
 (global-linum-mode -1) ; hide line number
 (tool-bar-mode -1) ; hide tool bar
@@ -202,7 +202,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ace-window
   :ensure t
-  :bind (("M-p" . 'ace-window)))
+  :bind (("s-2" . 'ace-window)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package which-key
@@ -229,7 +229,7 @@
   ;;   :config
   ;;   (all-the-icons-install-fonts))
   :bind
-  (("C-c C-p C-n". 'neotree-toggle))
+  (("s-1". 'neotree-toggle))
   :config
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (setq neo-smart-open t)
@@ -263,7 +263,7 @@
   (add-hook 'toml-mode-hook             #'enable-paredit-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package package
+(use-package smartparens
   :ensure t
   :hook ('prog-mode . 'smartparens-mode)
   :bind
@@ -375,12 +375,7 @@
          ("C-c C-b". 'cargo-process-build)
          ("C-c C-r". 'cargo-process-run)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package avy
-  :ensure t
-  :bind (("s-;". 'avy-goto-char-2)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;; Avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; expand region ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package expand-region
   :ensure t
   :bind (("C-=". 'er/expand-region)))
