@@ -29,22 +29,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
 ;; https://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
-(set-face-attribute 'default nil :height 160)
 (setq inhibit-startup-screen t) ; hide the welcome screen
 (menu-bar-mode -1) ; hide menu bar
 (global-linum-mode -1) ; hide line number
 (tool-bar-mode -1) ; hide tool bar
 (scroll-bar-mode -1) ; hide scroll bar
+(set-face-attribute 'default nil :height 160)
 (global-hl-line-mode 1) ; highlight current line
 
 ;;;;;;;;;;;;;;;;;;;; Highlights matching parenthesis ;;;;;;;;;;;;;;;;;;;;;;;
-(use-package paren
+;; https://github.com/tarsius/paren-face
+(use-package paren-face
   :ensure t
   :config
+  (setq show-paren-delay 0)
   (show-paren-mode 1)
   (set-face-background 'show-paren-match (face-background 'default))
   (set-face-foreground 'show-paren-match "red")
-  (set-face-attribute  'show-paren-match nil :strike-through t :weight 'ultra-bold))
+  (set-face-attribute 'show-paren-match nil :strike-through t :weight 'extra-bold))
+
 
 ;;;;;;;;;;;;;;;;;;;;;; global set key ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "s-l") 'goto-line)
@@ -77,6 +80,15 @@
 
 (global-set-key (kbd "C-;") 'comment-region-or-line)
 
+;;;;;;;;;;;;;;;;;;;; beacon ;;;;;;;;;;;;;;;;;;;;;;;
+;; https://github.com/Malabarba/beacon
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1)
+  (setq beacon-blink-duration 0.5)
+  (setq beacon-color "green"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ensure mode installed ;;;;;;;;;;;;;;
 (use-package yaml-mode
   :ensure t)
@@ -108,7 +120,8 @@
   :config
   (yas-reload-all)
   (setq yas-wrap-around-region t)
-  :hook ('prog-mode . 'yas-minor-mode))
+  :hook (('prog-mode . 'yas-minor-mode)
+         ('org-mode . 'yas-minor-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;
 (use-package recentf
@@ -207,6 +220,10 @@
   :ensure t
   :bind (("C-x g" . magit-status)))
 
+;; (use-package forge
+;;   :ensure t
+;;   :after magit)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ace-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ace-window
   :ensure t
@@ -273,7 +290,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; smartparens ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package smartparens
   :ensure t
-  :hook ('prog-mode . 'smartparens-mode)
+  :hook (('prog-mode . 'smartparens-mode)
+         ('eshell-mode . 'smartparens-mode))
   :bind
   (("C-M-a" . 'sp-beginning-of-sexp)
    ("C-M-e" . 'sp-end-of-sexp)
@@ -288,6 +306,7 @@
    ("C-k"   . 'sp-kill-hybrid-sexp)
    ("M-k"   . 'sp-backward-kill-sexp)))
 (require 'smartparens-config)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; rainbow ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package rainbow-delimiters
@@ -422,3 +441,20 @@
   (setq org-hide-emphasis-markers t)
   (setq org-todo-keywords
         '((sequence "TODO" "DOING"  "|" "DONE" "CANCEL"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;; org-reveal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://github.com/yjwen/org-reveal
+;;
+;; Available themes can be found in “css/theme/” in the reveal.js directory. black|league|night|simple|solarized|beige|blood|moon|serif|sky|white
+;; Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
+(use-package htmlize
+  :ensure t
+  :after org)
+
+(use-package ox-reveal
+  :ensure t
+  :after org
+  :config
+  (setq org-reveal-mathjax t)
+  ;; https://cdnjs.com/libraries/reveal.js/3.8.0
+  (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/"))
