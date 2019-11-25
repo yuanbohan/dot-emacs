@@ -15,7 +15,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(load-file "~/.emacs.d/conf/conf.el")
+(org-babel-load-file (expand-file-name "~/.emacs.d/conf/conf.org"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
