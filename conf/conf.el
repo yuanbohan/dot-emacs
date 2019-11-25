@@ -22,6 +22,13 @@
   (require 'bind-key) ;; if you use any :bind variant
   )
 
+;;;;;;;;;;;;;;;;; backup all tmp files into one dir ;;;;;;;;;;;;;;;;
+;; https://www.emacswiki.org/emacs/BackupDirectory
+(setq backup-directory-alist
+      `((".*" . "~/.emacs.d/backup/")))
+(setq auto-save-file-name-transforms
+      `((".*" "~/.emacs.d/backup/" t)))
+
 ;;;;;;;;;;;;;;;;; replace tab with space ;;;;;;;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -121,7 +128,7 @@
   (yas-reload-all)
   (setq yas-wrap-around-region t)
   :hook (('prog-mode . 'yas-minor-mode)
-         ('org-mode . 'yas-minor-mode)))
+         ('org-mode  . 'yas-minor-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; recentf ;;;;;;;;;;;;;;;;;;;;;
 (use-package recentf
@@ -428,35 +435,42 @@
 ;;;;;;;;;;;;;;;;;;;; org ;;;;;;;;;;;;;;;;;;;;
 (use-package org
   :ensure t
-  :init
-  (use-package org-bullets
-    :ensure t
-    :hook ('org-mode . (lambda () (org-bullets-mode 1))))
   :bind
   (("C-c l". 'org-store-link)
    ("C-c a" . 'org-agenda)
    ("C-c b" . 'org-switchb))
   :config
+  (require 'ox-md) ; https://orgmode.org/manual/Exporting.html
+  ;; https://stackoverflow.com/questions/22065589/org-mode-html-export-with-checkbox
+  (setq org-html-checkbox-type 'html)
   (setq org-log-done 'time)
   (setq org-hide-emphasis-markers t)
   (setq org-todo-keywords
         '((sequence "TODO" "DOING"  "|" "DONE" "CANCEL"))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;; org-reveal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; https://github.com/yjwen/org-reveal
-;;
-;; Available themes can be found in “css/theme/” in the reveal.js directory. black|league|night|simple|solarized|beige|blood|moon|serif|sky|white
-;; Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;; org related packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package org-bullets
+    :ensure t
+    :hook ('org-mode . (lambda () (org-bullets-mode 1)))
+    :after org)
+
 (use-package htmlize
   :ensure t
   :after org)
 
+(use-package ox-gfm
+  :ensure t
+  :after org)
+
+;; https://github.com/yjwen/org-reveal
+;;
+;; Available themes can be found in “css/theme/” in the reveal.js directory. black|league|night|simple|solarized|beige|blood|moon|serif|sky|white
+;; Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
 (use-package ox-reveal
   :ensure t
   :after org
   :config
   (setq org-reveal-mathjax t)
-  ;; https://cdnjs.com/libraries/reveal.js/3.8.0
   (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;; powerline ;;;;;;;;;;;;;;;;;;;;;;;;;;
