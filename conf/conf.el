@@ -29,7 +29,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;; ui related ;;;;;;;;;;;;;;;;;;
 ;; https://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
-(setq inhibit-startup-screen t) ; hide the welcome screen
+;; (setq inhibit-startup-screen t) ; hide the welcome screen
 (menu-bar-mode -1) ; hide menu bar
 (global-linum-mode -1) ; hide line number
 (tool-bar-mode -1) ; hide tool bar
@@ -458,3 +458,33 @@
   (setq org-reveal-mathjax t)
   ;; https://cdnjs.com/libraries/reveal.js/3.8.0
   (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; powerline ;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package powerline
+  :ensure t
+  :config
+  (powerline-default-theme)
+  ;; (powerline-center-theme)
+  ;; (powerline-center-evil-theme)
+  ;; (powerline-vim-theme)
+  ;; (powerline-nano-theme)
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; abbrev ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://www.emacswiki.org/emacs/AbbrevMode
+;; C-x a i g add-inverse-global
+;; C-x a i l add-inverse-local
+(setq-default abbrev-mode t)
+(setq abbrev-file-name             ;; tell emacs where to read abbrev
+      "~/.emacs.d/abbrev_defs")    ;; definitions from...
+(setq save-abbrevs 'silent)        ;; save abbrevs when files are saved
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; undo tree ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; https://elpa.gnu.org/packages/undo-tree.html
+;; C-x u
+;; C-_  (`undo-tree-undo') Undo changes.
+;; M-_  (`undo-tree-redo') Redo changes.
+(use-package undo-tree
+  :ensure t
+  :init
+  (global-undo-tree-mode))
