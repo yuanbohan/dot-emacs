@@ -146,6 +146,10 @@
     (setq yas-wrap-around-region t)
     :hook (('prog-mode . 'yas-minor-mode)
            ('org-mode  . 'yas-minor-mode)))
+
+  (use-package yasnippet-snippets
+    :ensure t
+    :after yasnippet)
 #+END_SRC
 
 * recentf
@@ -285,15 +289,6 @@
     :ensure t
     :config
     (which-key-mode))
-#+END_SRC
-
-* whitespace cleanup
-
-#+BEGIN_SRC emacs-lisp
-  (use-package whitespace-cleanup-mode
-    :ensure t
-    :bind (("C-c C-SPC". 'whitespace-cleanup))
-    :hook 'after-save)
 #+END_SRC
 
 * neotree
@@ -628,4 +623,13 @@ make this setting at the end of the configuration
     (set-face-background 'show-paren-match (face-background 'default))
     (set-face-foreground 'show-paren-match "red")
     (set-face-attribute 'show-paren-match nil :strike-through t :weight 'extra-bold))
+#+END_SRC
+
+* whitespace cleanup
+
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace-cleanup-mode
+    :ensure t
+    :bind (("C-c C-SPC". 'whitespace-cleanup))
+    :hook 'after-save)
 #+END_SRC
