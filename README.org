@@ -1,11 +1,10 @@
 * Personal Emacs configuration
 
-I use org file to config my emacs, which will make configuration clean.
-
-move ~dot-emacs~ to your home directory and rename to ~.emacs~
+I use org file to config my emacs, which makes configuration clean. move ~dot-emacs~ to your home directory and rename to ~.emacs~ and restart your emacs
 
 - I use GNU Emacs
 - make sure you can connect to melpa
+- I use ~Rust~ and ~Clojure~ so far, comment these package in ~conf.org~ if you do not need them
 
 ** major prod mode
 
@@ -13,8 +12,18 @@ move ~dot-emacs~ to your home directory and rename to ~.emacs~
 - [X] Clojure
 - [ ] Python
 - [ ] Golang
-- [ ] R (ESS)
 - [ ] Haskell
+
+** Reference
+
+- packages
+
+  - [[https://magit.vc][Magit]] MUST use
+  - [[https://orgmode.org][Org-mode]] which you SHOULD use
+  - [[https://github.com/jwiegley/use-package][use-package]] which makes configuration clean
+
+- blogs or videos
+  - https://cestlaz.github.io/stories/emacs/
 
 ** Thanks to
 
