@@ -62,11 +62,16 @@
   (global-set-key (kbd "s-l") 'goto-line)
   (global-set-key (kbd "s-k") 'kill-this-buffer)
 
-  ;; move window
+  ;; manage window
   (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
   (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
   (global-set-key (kbd "S-C-<down>") 'shrink-window)
   (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+  (global-set-key (kbd "s-0") 'delete-window)
+  (global-set-key (kbd "s-1") 'delete-other-windows)
+  (global-set-key (kbd "s-2") 'split-window-below)
+  (global-set-key (kbd "s-3") 'split-window-right)
+  (global-set-key (kbd "s-o") 'other-window)
 
   ;; hide show code block
   ;; (add-hook 'prog-mode-hook (lambda () (hs-minor-mode t)))
@@ -279,7 +284,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
-    :bind (("s-2" . 'ace-window)))
+    :bind (("s-w" . 'ace-window)))
 #+END_SRC
 
 * which key
@@ -318,7 +323,7 @@
     ;;   :config
     ;;   (all-the-icons-install-fonts))
     :bind
-    (("s-1". 'neotree-toggle))
+    (("s-t". 'neotree-toggle))
     :config
     (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
     (setq neo-smart-open t)
