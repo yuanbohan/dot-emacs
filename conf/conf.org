@@ -71,7 +71,6 @@
   (global-set-key (kbd "s-1") 'delete-other-windows)
   (global-set-key (kbd "s-2") 'split-window-below)
   (global-set-key (kbd "s-3") 'split-window-right)
-  (global-set-key (kbd "s-o") 'other-window)
 
   ;; hide show code block
   ;; (add-hook 'prog-mode-hook (lambda () (hs-minor-mode t)))
@@ -284,7 +283,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
-    :bind (("s-w" . 'ace-window)))
+    :bind (("M-o" . 'ace-window)))
 #+END_SRC
 
 * which key
