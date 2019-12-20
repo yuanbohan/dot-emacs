@@ -67,10 +67,6 @@
   (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
   (global-set-key (kbd "S-C-<down>") 'shrink-window)
   (global-set-key (kbd "S-C-<up>") 'enlarge-window)
-  (global-set-key (kbd "s-0") 'delete-window)
-  (global-set-key (kbd "s-1") 'delete-other-windows)
-  (global-set-key (kbd "s-2") 'split-window-below)
-  (global-set-key (kbd "s-3") 'split-window-right)
 
   ;; hide show code block
   ;; (add-hook 'prog-mode-hook (lambda () (hs-minor-mode t)))
@@ -130,14 +126,18 @@
 
 * exec-path-from-shell
 
+In order to speed emacs startup, I comment the config.
+If you need it, just `M-x exec-path-from-shell-initialize`
+
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
     :ensure t
-    :config
-    (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize)
-      (exec-path-from-shell-copy-envs
-       '("PATH"))))
+    ;; :config
+    ;; (when (memq window-system '(mac ns))
+    ;;   (exec-path-from-shell-initialize)
+    ;;   (exec-path-from-shell-copy-envs
+    ;;    '("PATH")))
+    )
 #+END_SRC
 
 * yasnippet
@@ -290,7 +290,8 @@
     :config
     ;; (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
     (setq neo-smart-open t)
-    (setq projectile-switch-project-action 'neotree-projectile-action))
+    ;; (setq projectile-switch-project-action 'neotree-projectile-action)
+    )
 #+END_SRC
 
 * paredit
@@ -313,25 +314,27 @@
 * smartparens
 
 #+BEGIN_SRC emacs-lisp
-    (use-package smartparens
-      :ensure t
-      :hook (('prog-mode . 'smartparens-mode)
-             ('eshell-mode . 'smartparens-mode))
-      :bind
-      (("C-M-a" . 'sp-beginning-of-sexp)
-       ("C-M-e" . 'sp-end-of-sexp)
-       ("C-M-f" . 'sp-forward-sexp)
-       ("C-M-b" . 'sp-backward-sexp)
-       ("C-M-n" . 'sp-next-sexp)
-       ("C-M-p" . 'sp-previous-sexp)
-       ("C-S-f" . 'sp-forward-symbol)
-       ("C-S-b" . 'sp-backward-symbol)
-       ("C-M-k" . 'sp-kill-sexp)
-       ("C-M-w" . 'sp-copy-sexp)
-       ("C-k"   . 'sp-kill-hybrid-sexp)
-       ("M-k"   . 'sp-backward-kill-sexp))
-      :config
-      (require 'smartparens-config))
+  (use-package smartparens
+    :ensure t
+    :hook (('prog-mode        . 'smartparens-mode)
+           ('eshell-mode      . 'smartparens-mode)
+           ('cider-mode       . 'smartparens-mode)
+           ('cider-repl-mode  . 'smartparens-mode))
+    :bind
+    (("C-M-a" . 'sp-beginning-of-sexp)
+     ("C-M-e" . 'sp-end-of-sexp)
+     ("C-M-f" . 'sp-forward-sexp)
+     ("C-M-b" . 'sp-backward-sexp)
+     ("C-M-n" . 'sp-next-sexp)
+     ("C-M-p" . 'sp-previous-sexp)
+     ("C-S-f" . 'sp-forward-symbol)
+     ("C-S-b" . 'sp-backward-symbol)
+     ("C-M-k" . 'sp-kill-sexp)
+     ("C-M-w" . 'sp-copy-sexp)
+     ("C-k"   . 'sp-kill-hybrid-sexp)
+     ("M-k"   . 'sp-backward-kill-sexp))
+    :config
+    (require 'smartparens-config))
 #+END_SRC
 
 * rainbow
@@ -346,7 +349,8 @@
 
 #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
-    :ensure t)
+    :ensure t
+    :hook (('clojure-mode . 'eldoc-mode)))
 
   ;; compojure indentation
   (define-clojure-indent
@@ -365,7 +369,6 @@
 
   (use-package cider
     :ensure t
-    ;; :hook ('cider-repl-mode . 'eldoc-mode)
     :config
     ;; go right to the REPL buffer when it's finished connecting
     (setq cider-repl-pop-to-buffer-on-connect t)
