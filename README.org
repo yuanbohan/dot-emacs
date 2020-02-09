@@ -1,32 +1,3 @@
-* Personal Emacs configuration
+* Personal Emacs configuration (Deprecated)
 
-I use org file to config my emacs, which makes configuration clean. move ~dot-emacs~ to your home directory and rename to ~.emacs~ and restart your emacs
-
-- I use GNU Emacs
-- make sure you can connect to melpa
-- I use ~Rust~ and ~Clojure~ so far, comment these package in ~conf.org~ if you do not need them
-
-** major prod mode
-
-- [X] Rust
-- [X] Clojure
-- [ ] Python
-- [ ] Golang
-- [ ] Haskell
-
-** Reference
-
-- packages
-
-  - [[https://magit.vc][Magit]] MUST use
-  - [[https://orgmode.org][Org-mode]] which you SHOULD use
-  - [[https://github.com/jwiegley/use-package][use-package]] which makes configuration clean
-
-- blogs or videos
-  - https://cestlaz.github.io/stories/emacs/
-
-** Thanks to
-
-- [[https://github.com/xtang][xtang]], I encounter Emacs
-- [[https://bearychat.com][BearyChat]], I encounter Clojure, Erlang
-- [[https://github.com/sunng87][sunng87]], I am doing something interesting with Rust
+please jump to [[https://github.com/yuanbohan/dot-files/tree/master/emacs][dot-files]] for more details
